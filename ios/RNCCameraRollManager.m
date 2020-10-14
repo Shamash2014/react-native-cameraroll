@@ -137,6 +137,16 @@ RCT_EXPORT_METHOD(saveToCameraRoll:(NSURLRequest *)request
       PHAssetChangeRequest *assetRequest ;
       if ([options[@"type"] isEqualToString:@"video"]) {
         assetRequest = [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:inputURI];
+        placeholder = [assetRequest placeholderForCreatedAsset];
+        if (![options[@"album"] isEqualToString:@""]) {
+          photosAsset = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+          PHAssetCollectionChangeRequest *albumChangeRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection assets:photosAsset];
+          [albumChangeRequest addAssets:@[placeholder]];
+        } else {
+          NSData *data = [NSData dataWithContentsOfURL:inputURI];
+          PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
+          [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:data options:options];
+        }
       } else {
         NSData *data = [NSData dataWithContentsOfURL:inputURI];
         UIImage *image = [UIImage imageWithData:data];
