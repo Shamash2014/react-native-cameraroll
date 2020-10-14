@@ -142,15 +142,11 @@ RCT_EXPORT_METHOD(saveToCameraRoll:(NSURLRequest *)request
           photosAsset = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
           PHAssetCollectionChangeRequest *albumChangeRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection assets:photosAsset];
           [albumChangeRequest addAssets:@[placeholder]];
-        } else {
-          NSData *data = [NSData dataWithContentsOfURL:inputURI];
-          PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
-          [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:data options:options];
         }
       } else {
         NSData *data = [NSData dataWithContentsOfURL:inputURI];
-        UIImage *image = [UIImage imageWithData:data];
-        assetRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+        PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
+        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:data options:options];
       }
       placeholder = [assetRequest placeholderForCreatedAsset];
       if (![options[@"album"] isEqualToString:@""]) {
